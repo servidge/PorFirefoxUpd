@@ -134,6 +134,7 @@ namespace Firefox_Updater
                 if (proc.ProcessName.Equals("firefox"))
                 {
                     MessageBox.Show(Langfile.Texts("MeassageRunning"), "Portable Firefox Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    break;
                 }
             }
         }
