@@ -27,12 +27,28 @@ namespace Firefox_Updater
         readonly WebClient myWebClient = new WebClient();
         readonly CultureInfo culture1 = CultureInfo.CurrentUICulture;
         public int comboIndex;
+        public static class ProxyClass
+        {
+            public static WebProxy ProxyServer = null;
+        }
         public Form1()
         {
             InitializeComponent();
+            foreach (string arg in Environment.GetCommandLineArgs())
+            {
+                if (arg.StartsWith("--proxy="))
+                {
+                    string proxyurl = arg.Substring(8);
+                    this.Text = this.Text + " - Proxy: " + proxyurl;
+                    Firefox_Updater.Form1.ProxyClass.ProxyServer = new WebProxy(proxyurl);
+                    Firefox_Updater.Form1.ProxyClass.ProxyServer.UseDefaultCredentials = true;
+                    Firefox_Updater.Form1.ProxyClass.ProxyServer.Credentials = CredentialCache.DefaultNetworkCredentials;
+                }
+            }
             for (int i = 0; i <= 4; i++)
             {
                 WebRequest myWebRequest = WebRequest.Create("https://download.mozilla.org/?" + ring[i] + "de");
+                myWebRequest.Proxy = Firefox_Updater.Form1.ProxyClass.ProxyServer;
                 WebResponse myWebResponse = myWebRequest.GetResponse();
                 myWebResponse.Close();
                 if (i == 1)
@@ -270,7 +286,7 @@ namespace Firefox_Updater
                     await DownloadFile(0, 2, 2,3);
                     await DownloadFile(0, 3, 3, 4);
                     await DownloadFile(0, 4, 4, 5);
-					checkBox1.Checked = false;
+                    checkBox1.Checked = false;
                     checkBox1.Enabled = false;
                 }
             }
@@ -291,8 +307,8 @@ namespace Firefox_Updater
                         await DownloadFile(1, 7, 7, 8);
                         await DownloadFile(1, 8, 8, 9);
                         await DownloadFile(1, 9, 9, 10);
-						checkBox2.Checked = false;
-						checkBox2.Enabled = false;
+                        checkBox2.Checked = false;
+                        checkBox2.Enabled = false;
                     }
                 }
                 await NewMethod2(1, 5, 5, 6);
@@ -345,6 +361,7 @@ namespace Firefox_Updater
             Controls.Add(progressBox);
             List<Task> list = new List<Task>();
             WebRequest myWebRequest = WebRequest.Create("https://download.mozilla.org/?" + ring[c] + lang[comboIndex]);
+            myWebRequest.Proxy = Firefox_Updater.Form1.ProxyClass.ProxyServer;
             WebResponse myWebResponse = myWebRequest.GetResponse();
             Uri uri = new Uri(myWebResponse.ResponseUri.ToString());
             ServicePoint sp = ServicePointManager.FindServicePoint(uri);
@@ -352,6 +369,7 @@ namespace Firefox_Updater
             myWebResponse.Close();
             using (WebClient myWebClient = new WebClient())
             {
+                myWebClient.Proxy = Firefox_Updater.Form1.ProxyClass.ProxyServer;
                 myWebClient.DownloadProgressChanged += (o, args) =>
                 {
                     Control[] buttons = Controls.Find("button" + g, true);
@@ -863,6 +881,7 @@ namespace Firefox_Updater
             try
             {
                 var request = (WebRequest)HttpWebRequest.Create("https://github.com/UndertakerBen/PorFirefoxUpd/raw/master/Version.txt");
+                request.Proxy = Firefox_Updater.Form1.ProxyClass.ProxyServer;
                 var response = request.GetResponse();
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
@@ -885,6 +904,7 @@ namespace Firefox_Updater
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 var request2 = (WebRequest)HttpWebRequest.Create("https://github.com/UndertakerBen/PorFirefoxUpd/raw/master/Version.txt");
+                request2.Proxy = Firefox_Updater.Form1.ProxyClass.ProxyServer;
                 var response2 = request2.GetResponse();
                 using (StreamReader reader = new StreamReader(response2.GetResponseStream()))
                 {
@@ -893,6 +913,7 @@ namespace Firefox_Updater
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     using (WebClient myWebClient2 = new WebClient())
                     {
+                        myWebClient2.Proxy = Firefox_Updater.Form1.ProxyClass.ProxyServer;
                         myWebClient2.DownloadFile($"https://github.com/UndertakerBen/PorFirefoxUpd/releases/download/v{version}/Portable.Firefox.Updater.v{version}.7z", @"Portable.Firefox.Updater.v" + version + ".7z");
                     }
                     File.AppendAllText(@"Update.cmd", "@echo off" + "\n" +
@@ -915,6 +936,7 @@ namespace Firefox_Updater
             try
             {
                 var request = (WebRequest)HttpWebRequest.Create("https://github.com/UndertakerBen/PorFirefoxUpd/raw/master/Launcher/Version.txt");
+                request.Proxy = Firefox_Updater.Form1.ProxyClass.ProxyServer;
                 var response = request.GetResponse();
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
@@ -927,6 +949,7 @@ namespace Firefox_Updater
                         {
                             using (WebClient myWebClient2 = new WebClient())
                             {
+                                myWebClient2.Proxy = Firefox_Updater.Form1.ProxyClass.ProxyServer;
                                 myWebClient2.DownloadFile("https://github.com/UndertakerBen/PorFirefoxUpd/raw/master/Launcher/Launcher.7z", @"Launcher.7z");
                             }
                             string arguments = " x " + @"Launcher.7z" + " -o" + @"Bin\\Launcher" + " -y";
