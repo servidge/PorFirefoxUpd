@@ -133,8 +133,11 @@ namespace Firefox_Updater
             {
                 if (proc.ProcessName.Equals("firefox"))
                 {
-                    MessageBox.Show(Langfile.Texts("MeassageRunning"), "Portable Firefox Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    break;
+                    DialogResult result = MessageBox.Show(Langfile.Texts("MeassageRunning"), "Portable Firefox Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+                    if (result != DialogResult.Yes)
+                    {
+                        break;
+                    }
                 }
             }
         }
