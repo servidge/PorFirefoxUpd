@@ -45,6 +45,28 @@ namespace Firefox_Updater
                     Firefox_Updater.Form1.ProxyClass.ProxyServer.Credentials = CredentialCache.DefaultNetworkCredentials;
                 }
             }
+            try
+            {
+                WebRequest myWebRequestTest = WebRequest.Create("https://download.mozilla.org/?");
+                myWebRequestTest.Timeout = 2000;
+                myWebRequestTest.Proxy = Firefox_Updater.Form1.ProxyClass.ProxyServer;
+                WebResponse myWebResponseTest = myWebRequestTest.GetResponse();
+                if (((HttpWebResponse)myWebResponseTest).StatusCode == HttpStatusCode.OK)
+                {
+                    myWebResponseTest.Close();
+                }
+                else
+                {
+                    myWebResponseTest.Close();
+                    MessageBox.Show("Fehlermeldung: \n\r" + ((HttpWebResponse)myWebResponseTest).StatusCode.ToString());
+                    Environment.Exit(253);
+                }
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show("Fehlermeldung: \n\r" + ex);
+                Environment.Exit(254);
+            }
             for (int i = 0; i <= 4; i++)
             {
                 WebRequest myWebRequest = WebRequest.Create("https://download.mozilla.org/?" + ring[i] + "de");
