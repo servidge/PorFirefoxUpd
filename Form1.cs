@@ -35,6 +35,12 @@ namespace Firefox_Updater
         public Form1()
         {
             InitializeComponent();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://download.mozilla.org");
+            IWebProxy proxy = request.Proxy;
+            if (proxy != null)
+            {
+                NewMethod10(proxy.GetProxy(request.RequestUri).ToString());
+            }
             if (File.Exists($"{applicationPath}\\Proxy.ini"))
             {
                 string proxyurl = File.ReadAllText($"{applicationPath}\\Proxy.ini");
