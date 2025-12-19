@@ -35,6 +35,7 @@ namespace Firefox_Updater
         public Form1()
         {
             InitializeComponent();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://download.mozilla.org");
             IWebProxy proxy = request.Proxy;
             if (proxy != null)
